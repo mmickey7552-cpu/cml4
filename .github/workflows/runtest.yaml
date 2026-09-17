@@ -4,13 +4,9 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  workflow_dispatch:
-permissions:
-  contents: write
-  pull-requests: write
 jobs:
   test_model:
-    run_on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -24,7 +20,7 @@ jobs:
       - name: Create CML report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run:
+        run: |
           echo "test output" > report.md
           echo "\'\'\'" >> report.md
           cat test_output.txt >> report.md
@@ -32,5 +28,3 @@ jobs:
           echo "metrics from training" >> report.md
           cat meterics.csv >> report.md
           cml comment create --publish report.md
-
-
