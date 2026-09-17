@@ -38,6 +38,7 @@ class TestModel(unittest.TestCase):
         sample1 = self.samples_path+"/sample1.jpg"
         resized=self.convert_img(sample1)
         result=self.restored_model.predict(resized)
+        print(result[0][0])
         if result[0][0] >= 0.5:
             prediction="dog"
         else:
