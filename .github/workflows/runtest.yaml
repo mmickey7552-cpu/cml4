@@ -8,23 +8,26 @@ jobs:
   test_model:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.12.3"
+          python-version: "3.12"
       - uses: iterative/setup-cml@v2
       - name: run unit tests
+        env:
+          TF_CPP_MIN_LOG_LEVEL: "3"
         run: |
           pip install -r requirements.txt
-          python -m test 2>&1 > test_output.txt
+          python -m test > test_output.txt 2>&1
       - name: Create CML report
+        if: always()
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "test output" > report.md
-          echo "\'\'\'" >> report.md
+          echo "## Test output" > report.md
+          echo '```' >> report.md
           cat test_output.txt >> report.md
-          echo "\'\'\'" >> report.md
-          echo "metrics from training" >> report.md
-          cat metrics.csv >> report.md
+          echo '```' >> report.md
+          echo "## Metrics from training" >> report.md
+          awk -F, 'NR==1{print "| "$1" | "$2" | "$3" | "$4" | "$5" |"; print "|---|---|---|---|---|"; next} {printf "| %s | %.3f | %.3f | %.3f | %.3f |\n",$1,$2,$3,$4,$5}' metrics.csv >> report.md
           cml comment create --publish report.md
