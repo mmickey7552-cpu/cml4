@@ -21,12 +21,12 @@ class TestModel(unittest.TestCase):
         sample = np.expand_dims(sample_img, axis=0)              # (1, 150, 150, 3)
         self.base_model = applications.VGG16(include_top=False, weights='imagenet',
                                              input_shape=(150, 150, 3))
-        return self.base_model.predict(sample)                   # (1, 4, 4, 512)
+        return self.base_model.predict(sample,verbose=0)                   # (1, 4, 4, 512)
 
     def test_sample(self):
         sample1 = self.samples_path+"/sample1.jpg"
         resized=self.convert_img(sample1)
-        result=self.restored_model.predict(resized)
+        result=self.restored_model.predict(resized,verbose=0)
         print(result[0][0])
         if result[0][0] >= 0.5:
             prediction="dog"
