@@ -11,28 +11,17 @@ class TestModel(unittest.TestCase):
         from tensorflow.keras.models import load_model
         self.restored_model=load_model(self.top_model_complete)
 
-    def convert_img(self,img):
-        import numpy as np
-        from tensorflow.keras.utils import load_img,img_to_array
-        from tensorflow.keras import applications
-        from tensorflow.keras.models import load_model,Model
-        from tensorflow.image import resize
+def convert_img(self, img):
+    import numpy as np
+    from tensorflow.keras.utils import load_img, img_to_array
+    from tensorflow.keras import applications
 
-        #load model as size expected by VGG16
-        sample_image=load_img(img,target_size=(224,224))
-        sample_img=img_to_array(sample_image)/255.0
-        sample=np.expand_dims(sample_img,axis=0)
-        #passing through base model to get speicif abstract representation
-        self.base_model= applications.VGG16(include_top=False,input_shape=(224,224,3))
-        #choosing a layer that outputs (4,4,512)
-        layer_name="block5_pool" #last maxpooling layer 
-        output_layer=Model(inputs=self.base_model.input,outputs=self.base_model.get_layer(layer_name).output)
-        converted_img=output_layer.predict(sample)
-        converted_img= converted_img[0]
-        resized_sample=resize(converted_img,size=(4,4))
-        #get batch dimension representation
-        resized=np.expand_dims(resized_sample,axis=0)
-        return resized
+    sample_image = load_img(img, target_size=(150, 150))
+    sample_img = img_to_array(sample_image) / 255.0          # (150, 150, 3)
+    sample = np.expand_dims(sample_img, axis=0)              # (1, 150, 150, 3)
+    self.base_model = applications.VGG16(include_top=False, weights='imagenet',
+                                         input_shape=(150, 150, 3))
+    return self.base_model.predict(sample)                   # (1, 4, 4, 512)
 
     def test_sample(self):
         sample1 = self.samples_path+"/sample1.jpg"
