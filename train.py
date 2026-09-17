@@ -1,43 +1,4 @@
-'''This script goes along the blog post
-"Building powerful image classification models using very little data"
-from blog.keras.io.
 
-In our example we will be using data that can be downloaded at:
-https://www.kaggle.com/tongpython/cat-and-dog
-
-In our setup, it expects:
-- a data/ folder
-- train/ and validation/ subfolders inside data/
-- cats/ and dogs/ subfolders inside train/ and validation/
-- put the cat pictures index 0-X in data/train/cats
-- put the cat pictures index 1000-1400 in data/validation/cats
-- put the dogs pictures index 0-X in data/train/dogs
-- put the dog pictures index 1000-1400 in data/validation/dogs
-
-We have X training examples for each class, and 400 validation examples
-for each class. In summary, this is our directory structure:
-```
-data/
-    train/
-        dogs/
-            dog001.jpg
-            dog002.jpg
-            ...
-        cats/
-            cat001.jpg
-            cat002.jpg
-            ...
-    validation/
-        dogs/
-            dog001.jpg
-            dog002.jpg
-            ...
-        cats/
-            cat001.jpg
-            cat002.jpg
-            ...
-```
-'''
 import numpy as np
 import sys
 import os
@@ -56,6 +17,7 @@ path = os.path.abspath(pathname)
 img_width, img_height = 150, 150
 
 top_model_weights_path = 'model.weights.h5'
+top_model_complete= 'model.keras'
 train_data_dir = os.path.join('data', 'train')
 validation_data_dir = os.path.join('data', 'validation')
 cats_train_path = os.path.join(path, train_data_dir, 'cats')
@@ -122,6 +84,8 @@ def train_top_model():
               verbose=0,
               callbacks=[TqdmCallback(), CSVLogger("metrics.csv")])
     model.save_weights(top_model_weights_path)
+    model.save(top_model_complete)
+
 
 
 save_bottlebeck_features()
