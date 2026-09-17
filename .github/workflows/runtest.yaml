@@ -26,5 +26,5 @@ jobs:
           cat test_output.txt >> report.md
           echo "\'\'\'" >> report.md
           echo "metrics from training" >> report.md
-          cat meterics.csv >> report.md
+          cat metrics.csv >> report.md
           cml comment create --publish report.md
